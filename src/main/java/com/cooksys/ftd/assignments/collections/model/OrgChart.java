@@ -38,36 +38,34 @@ public class OrgChart {
      * @return true if the {@code Employee} was added successfully, false otherwise
      */
     public boolean addEmployee(Employee employee) {
-    	
-    	/* if(orgChart.contains(employee)){
-    		
+    	if(employee == null){
     		return false;
     	}
-    	else if(employee.hasManager() && !orgChart.contains(employee.getManager())){
-
-    		orgChart.add(employee.getManager());
+    	
+    	Manager m = employee.getManager();
+    	Boolean hasMgr = employee.hasManager();
+    	
+    	if(orgChart.contains(employee)){
+    		return false;
     		
-    		for(Employee e : employee.getChainOfCommand()){
-    			
-    			if(orgChart.contains(e) || !e.hasManager())
-    				break;
-    			
+    	}else if(hasMgr && orgChart.contains(m)){
+    		return orgChart.add(employee);
+    		
+    	}else if((employee instanceof Manager) && hasMgr == false){
+    		return orgChart.add(employee);
+    		
+    	}else if(hasMgr && orgChart.contains(m) == false){
+    		
+    		List<Manager> chain = employee.getChainOfCommand();
+    		
+    		for(Employee e : chain){
     			orgChart.add(e);
     		}
-    		return true;
-    	}
-    	else if(employee.hasManager() && orgChart.contains(employee.getManager())){
+    		return orgChart.add(employee);
     		
-    		orgChart.add(employee);
-    		return true;
-    	}
-    	else if((employee instanceof Manager) && !employee.hasManager()){
-    		
-    		orgChart.add(employee);
-    		return true;
     	}else{
     		return false;
-    	} */
+    	}
     }
 
     /**
@@ -79,7 +77,7 @@ public class OrgChart {
      * @return true if the {@code Employee} has been added to the {@code OrgChart}, false otherwise
      */
     public boolean hasEmployee(Employee employee) {
-        
+        return orgChart.contains(employee);
     }
 
     /**
@@ -93,7 +91,7 @@ public class OrgChart {
      *         been added to the {@code OrgChart}
      */
     public Set<Employee> getAllEmployees() {
-    	
+    	return new HashSet<Employee>(orgChart);
     }
 
     /**
@@ -107,7 +105,14 @@ public class OrgChart {
      *         have been added to the {@code OrgChart}
      */
     public Set<Manager> getAllManagers() {
-
+    	Set<Manager> managers = new HashSet<>();
+    	
+    	for(Employee m : orgChart){
+    		if(m instanceof Manager){
+    			managers.add((Manager)m);
+    		}
+    	}
+    	return managers;
     }
 
     /**
@@ -127,8 +132,18 @@ public class OrgChart {
      *         parent, or an empty set if the {@code Manager} is not present in the {@code OrgChart}
      *         or if there are no subordinates for the given {@code Manager}
      */
-    public Set<Employee> getDirectSubordinates(Manager manager) {
-
+    public Set<Employee> getDirectSubordinates(Manager manager) {  	
+    	if(orgChart.contains(manager) == false){
+    		return new HashSet<Employee>();
+    	}
+    	Set<Employee> subs = new HashSet<>();
+    	
+    	for(Employee e : orgChart){
+    		if(e.getManager() == manager){
+    			subs.add(e);
+    		}
+    	}
+    	return subs;    	
     }
 
     /**
@@ -148,7 +163,18 @@ public class OrgChart {
      *         associated {@code Manager}, or an empty map if the {@code OrgChart} is empty.
      */
     public Map<Manager, Set<Employee>> getFullHierarchy() {
-
+    	// null check?
+    	if(orgChart.isEmpty()){
+    		return new HashMap<Manager, Set<Employee>>();
+    	}
+    	Map<Manager, Set<Employee>> full = new HashMap<>();
+    	
+    	for(Employee e : orgChart){
+    		if(e instanceof Manager){
+    			full.put((Manager)e, getDirectSubordinates((Manager)e));
+    		}
+    	}
+    	return full;
     }
 
 }
