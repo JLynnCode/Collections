@@ -2,7 +2,9 @@ package com.cooksys.ftd.assignments.collections.model;
 
 import com.cooksys.ftd.assignments.collections.util.MissingImplementationException;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * TODO: Implement this class
@@ -13,6 +15,9 @@ import java.util.List;
  */
 public class Manager implements Employee {
 
+	private String managerName;
+	private Manager manager;
+		
     // TODO: Does this class need private fields? If so, add them here
 
     /**
@@ -21,7 +26,8 @@ public class Manager implements Employee {
      * @param name the name of the manager to be created
      */
     public Manager(String name) {
-        throw new MissingImplementationException();
+        
+    	managerName = name;
     }
 
     /**
@@ -31,7 +37,9 @@ public class Manager implements Employee {
      * @param manager the direct manager of the manager to be created
      */
     public Manager(String name, Manager manager) {
-        throw new MissingImplementationException();
+        
+    	managerName = name;
+    	this.manager = manager;
     }
 
     /**
@@ -41,7 +49,8 @@ public class Manager implements Employee {
      */
     @Override
     public String getName() {
-        throw new MissingImplementationException();
+        
+    	return this.managerName;
     }
 
     /**
@@ -51,7 +60,12 @@ public class Manager implements Employee {
      */
     @Override
     public boolean hasManager() {
-        throw new MissingImplementationException();
+        
+    	if(this.manager != null){
+    		return true;
+    	}else{
+    		return false;
+    	}
     }
 
     /**
@@ -61,7 +75,8 @@ public class Manager implements Employee {
      */
     @Override
     public Manager getManager() {
-        throw new MissingImplementationException();
+        
+    	return this.manager;
     }
 
     /**
@@ -79,8 +94,33 @@ public class Manager implements Employee {
      */
     @Override
     public List<Manager> getChainOfCommand() {
-        throw new MissingImplementationException();
+        
+    	List<Manager> chain = new ArrayList<>();
+    	
+    	for(Manager m = this.manager; m != null; m = m.getManager()){
+    		chain.add(m);
+    	}
+    	if(!hasManager()){
+    		return new ArrayList<Manager>();
+    	}
+    	
+    	return chain;
     }
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(manager, managerName);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof Manager))
+			return false;
+		Manager other = (Manager) obj;
+		return Objects.equals(manager, other.manager) && Objects.equals(managerName, other.managerName);
+	}
 
     // TODO: Does this class need custom .equals() and .hashcode() methods? If so, implement them here.
 
