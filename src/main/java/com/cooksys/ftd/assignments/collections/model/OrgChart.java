@@ -163,7 +163,7 @@ public class OrgChart {
      *         associated {@code Manager}, or an empty map if the {@code OrgChart} is empty.
      */
     public Map<Manager, Set<Employee>> getFullHierarchy() {
-    	// null check?
+
     	if(orgChart.isEmpty()){
     		return new HashMap<Manager, Set<Employee>>();
     	}
@@ -176,5 +176,4 @@ public class OrgChart {
     	}
     	return full;
     }
-
 }
